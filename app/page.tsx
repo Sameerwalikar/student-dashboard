@@ -1,25 +1,45 @@
+import Sidebar from "@/components/dashboard/Sidebar";
+import HeroTile from "@/components/dashboard/HeroTile";
+import CourseCard from "@/components/dashboard/CourseCard";
+import ActivityTile from "@/components/dashboard/ActivityTile";
+import DashboardContent from "@/components/dashboard/DashboardContent";
+
 import { createSupabaseClient } from "@/lib/supabase/server";
 import { Course } from "@/types/course";
 
 export default async function Home() {
   const supabase = createSupabaseClient();
 
-  const { data: courses, error } = await supabase
+  const { data: courses } = await supabase
     .from("courses")
     .select("*");
 
-  console.log(courses);
-  console.log(error);
-
   return (
-    <main className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-4xl font-bold mb-8">
-        Student Dashboard
-      </h1>
+    <main className="min-h-screen bg-black pb-24 text-white md:pb-0">
+      <div className="flex">
+        <Sidebar />
 
-      <pre>
-        {JSON.stringify(courses, null, 2)}
-      </pre>
+        <DashboardContent>
+          <div className="grid gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-8">
+              <HeroTile />
+            </div>
+
+            <div className="lg:col-span-4">
+              <ActivityTile />
+            </div>
+
+            {courses?.map((course: Course) => (
+              <div
+                key={course.id}
+                className="lg:col-span-4"
+              >
+                <CourseCard course={course} />
+              </div>
+            ))}
+          </div>
+        </DashboardContent>
+      </div>
     </main>
   );
 }
