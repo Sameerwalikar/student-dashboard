@@ -5,5 +5,6 @@ export interface Course {
   icon_name: string;
   category: string;
   duration: string;
+  description: string;
   created_at: string;
 }
